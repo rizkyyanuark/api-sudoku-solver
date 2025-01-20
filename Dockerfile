@@ -7,6 +7,11 @@ ENV APP_HOME /app
 # Set working directory
 WORKDIR $APP_HOME
 
+# Install necessary libraries
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+
 # Salin seluruh kode aplikasi ke dalam container
 COPY . ./
 
@@ -14,4 +19,4 @@ COPY . ./
 RUN pip install -r requirements.txt
 
 # Jalankan aplikasi menggunakan gunicorn
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app                                                                                          
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
