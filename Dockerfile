@@ -1,17 +1,17 @@
-# Gunakan image dasar yang sesuai
+# Gunakan image Python sebagai dasar
 FROM python:3.10-slim
 
-ENV PYTHONUNBUFFERED True
-ENV APP_HOME /app
+# Tetapkan direktori kerja di dalam container
+WORKDIR /app
 
-# Set working directory
-WORKDIR $APP_HOME
+# Salin semua file ke dalam container
+COPY . .
 
-# Salin seluruh kode aplikasi ke dalam container
-COPY . ./
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Salin requirements.txt dan install dependencies
-RUN pip install -r requirements.txt
+# Expose port 8080 untuk Cloud Run
+EXPOSE 8080
 
-# Jalankan aplikasi menggunakan gunicorn
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+# Jalankan aplikasi
+CMD ["python", "app.py"]
