@@ -1,8 +1,9 @@
 # Gunakan image dasar yang sesuai
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED True
 ENV APP_HOME /app
+ENV PORT 8080
 
 # Set working directory
 WORKDIR $APP_HOME
