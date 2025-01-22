@@ -1,4 +1,3 @@
-# Gunakan image dasar yang sesuai
 FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED True
@@ -12,11 +11,18 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
-# Salin seluruh kode aplikasi ke dalam container
-COPY . ./
+# Copy requirements.txt and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Salin requirements.txt dan install dependencies
-RUN pip install -r requirements.txt
+# Copy the application code
+COPY src/ ./src/
 
-# Jalankan aplikasi menggunakan gunicorn
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+# Set the environment variable for the port
+ENV PORT 8080
+
+# Expose the port the app runs on
+EXPOSE $PORT
+
+# Run the application using gunicorn
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 src.app:app
